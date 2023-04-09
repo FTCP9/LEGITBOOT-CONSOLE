@@ -11,11 +11,11 @@ import mysql.connector
 import requests
 
 db = mysql.connector.connect(
-    host="146.19.191.73",
-    port="3306",
-    user="LEGITBOOT",
-    password="Moon1123",
-    database="LEGITBOOT"
+    host="xxx3",
+    port="33xx06",
+    user="xx",
+    password="xxx23",
+    database="xxxx"
 )
 
 cursor = db.cursor()
