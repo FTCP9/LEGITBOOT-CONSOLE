@@ -9,13 +9,14 @@ import win32gui
 import pwinput
 import mysql.connector
 import requests
+import time
 
 db = mysql.connector.connect(
-    host="xxx3",
-    port="33xx06",
-    user="xx",
-    password="xxx23",
-    database="xxxx"
+    host="146.19.191.73",
+    port="3306",
+    user="root",
+    password="Moon1123",
+    database="LEGITBOOT"
 )
 
 cursor = db.cursor()
@@ -70,7 +71,7 @@ def start():
             return
         if user is not None and password == user[1]:
             print("Correct password")
-            main()
+            main(user)
         else:
             print(f"{Fore.RED}! {Fore.WHITE} Incorrect password")
             sys.exit()
@@ -99,7 +100,7 @@ def start():
         ip_address = requests.get("https://api.ipify.org").text
         cursor.execute("SELECT COUNT(*) FROM users")
         count = cursor.fetchone()[0] + 1
-        insert_query = f"INSERT INTO users (id, username, password, ip_address) VALUES ('{count}', '{username}', '{password}', '{ip_address}')"
+        insert_query = f"INSERT INTO users (id, username, password, ip_address, plan_type) VALUES ('{count}', '{username}', '{password}', '{ip_address}', 'Free')"
         cursor.execute(insert_query)
         db.commit()
         cursor.close()
@@ -107,7 +108,8 @@ def start():
         os.mkdir(file_path)
         with open(username_file_path, "w") as file:
             file.write(username)
-        print(f"{Fore.YELLOW}* {Fore.WHITE}Please start this program again!")
+        print(f"{Fore.RED}! {Fore.WHITE} Please start the program again.")
+        sys.exit()
 
 def main2():
     os.system("cls || clear")
@@ -115,41 +117,69 @@ def main2():
     print("")
     print(f"{Fore.LIGHTGREEN_EX}? {Fore.WHITE}Welcome! Please choose what you want to do: {Fore.LIGHTBLACK_EX}(Use arrow keys)")
 
-def main():
-  option = 1
-  console_window = win32gui.GetForegroundWindow()
-  while True:
-        main2()
-        print((Fore.LIGHTBLUE_EX + "> " if option == 1 else f"{Fore.WHITE}") + "LEGITBOOT CONSOLE")
-        print((Fore.LIGHTBLUE_EX + "> " if option == 2 else f"{Fore.WHITE}") + "Buy plans")
-        print((Fore.LIGHTBLUE_EX + "> " if option == 3 else f"{Fore.WHITE}") + "Contact Support")
-        print((Fore.LIGHTBLUE_EX + "> " if option == 4 else f"{Fore.WHITE}") + "Known working links")
+def main(user):
+    option = 1
+    console_window = win32gui.GetForegroundWindow()
+    while True:
+        try:
+            main2()
+            print((Fore.LIGHTBLUE_EX + "> " if option == 1 else f"{Fore.WHITE}") + "LEGITBOOT CONSOLE")
+            print((Fore.LIGHTBLUE_EX + "> " if option == 2 else f"{Fore.WHITE}") + "Buy plans")
+            print((Fore.LIGHTBLUE_EX + "> " if option == 3 else f"{Fore.WHITE}") + "Account details")
+            print((Fore.LIGHTBLUE_EX + "> " if option == 4 else f"{Fore.WHITE}") + "Known working links")
 
-        if win32gui.GetForegroundWindow() == console_window:
-            event = keyboard.read_event(suppress=True)
-            if event.event_type == "down":
-                if event.name == "down":
-                    option = min(option + 1, 4)
-                elif event.name == "up":
-                    option = max(option - 1, 1)
-                elif event.name == "esc":
-                    sys.exit()
-                elif event.name == "enter":
-                    if option == 1:
-                        console()
-                        return
-                    elif option == 2:
-                        print("Attack selected")
-                        # TODO: implement "Attack" functionality
-                    elif option == 3:
-                        print("Api Documentation selected")
-                        # TODO: implement "Api Documentation" functionality
-                    elif option == 4:
-                        print("Exiting program")
+            if win32gui.GetForegroundWindow() == console_window:
+                event = keyboard.read_event(suppress=True)
+                if event.event_type == "down":
+                    if event.name == "down":
+                        option = min(option + 1, 4)
+                    elif event.name == "up":
+                        option = max(option - 1, 1)
+                    elif event.name == "esc":
                         sys.exit()
+                    elif event.name == "enter":
+                        if option == 1:
+                            console(user)
+                        elif option == 2:
+                            print("Attack selected")
+                        elif option == 3:
+                            account(user)
+                        elif option == 4:
+                            print("Exiting program")
+                            sys.exit()
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
 
-def console():
+def account(user):
+    os.system("cls || clear")
+    print(banner)
+    print(f"{Fore.LIGHTGREEN_EX}? {Fore.WHITE}Welcome! Here you can see your account details!")
+    print("")
+
+    lola = (f"SELECT plan_type, id, username FROM users WHERE username = '{user[0]}'")
+    cursor.execute(lola)
+
+    # Fetch the data
+    data = cursor.fetchall()
+
+    if len(data) == 1:
+        plan_type, id, username = data[0]
+        print(f"Username: {username}")
+        print(f"ID: {id}")
+        print(f"Plan: {plan_type}")
+        print("")
+        print(f"{Fore.LIGHTGREEN_EX}? {Fore.WHITE}Press Enter to return to main menu")
+        keyboard.wait('enter')
+        main(user)
+    else:
+        print(f"{Fore.LIGHTRED_EX}! {Fore.WHITE}Error fetching account details for user {user[0]}.")
+        print("")
+        print(f"{Fore.LIGHTGREEN_EX}? {Fore.WHITE}Press Enter to return to main menu")
+        keyboard.wait('enter')
+        main(user)
+
+def console(user):
     os.system("cls || clear")
     print(banner)
     print(f"{Fore.LIGHTGREEN_EX}? {Fore.WHITE}Welcome! Please choose what you want to do: {Fore.LIGHTBLUE_EX}LEGITBOOT console")
@@ -157,12 +187,12 @@ def console():
     print(f"{Fore.WHITE}Type `{Fore.LIGHTYELLOW_EX}help{Fore.WHITE}` to display available commands.")
     print(f"{Fore.WHITE}Type `{Fore.LIGHTYELLOW_EX}exit{Fore.WHITE}` to return to main menu.")
     print("")
-    console2()
+    console2(user)
 
-def console2():
+def console2(user):
     command = input(f"{Fore.LIGHTGREEN_EX}? {Fore.WHITE}-> ",)
     if command == "exit":
-        main()
+        main(user)
     if command == "help":
         if os.path.isdir(help_file_path):
             f = open(help_file_path, "r")
@@ -194,10 +224,10 @@ find <query> - finds online minecraft servers based on motd, version, plugins, e
  """)
             f = open(help_file_path, "r")
             print(Fore.WHITE + f.read())
-            console2()
+            console2(user)
 
     else:
         print(f"{Fore.RED}Unknown command: {Fore.WHITE}{command}")
-        console2()
+        console2(user)
 
 start()
