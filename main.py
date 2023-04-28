@@ -12,10 +12,10 @@ import requests
 import time
 
 db = mysql.connector.connect(
-    host="146.19.191.73",
+    host="localhost",
     port="3306",
-    user="root",
-    password="Moon1123",
+    user="LegitBoot",
+    password="KLESLO",
     database="LEGITBOOT"
 )
 
