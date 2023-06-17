@@ -158,7 +158,7 @@ def account(user):
     print(f"{Fore.LIGHTGREEN_EX}? {Fore.WHITE}Welcome! Here you can see your account details!")
     print("")
 
-    lola = (f"SELECT plan_type, id, username FROM users WHERE username = '{user[0]}'")
+    lola = (f"SELECT plan_type, id, username FROM users WHERE id = '{user[0]}'")
     cursor.execute(lola)
 
     # Fetch the data
