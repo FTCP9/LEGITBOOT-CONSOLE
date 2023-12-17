@@ -15,7 +15,7 @@ db = mysql.connector.connect(
     host="localhost",
     port="3306",
     user="LegitBoot",
-    password="KLESLO",
+    password="kleslo",
     database="LEGITBOOT"
 )
 
@@ -67,10 +67,10 @@ def start():
             if not content == User:
                 print(f"{Fore.RED}! {Fore.WHITE} Username in the text file does not match the username entered")
                 return
-        if user[1] != password:
-            print(f"{Fore.RED}! {Fore.WHITE} Incorrect password. Password from the database: {user[1]}. Password entered: {password}")
+        if user[2] != password:
+            print(f"{Fore.RED}! {Fore.WHITE} Incorrect password. Password from the database: {user[2]}. Password entered: {password}")
             return
-        if user is not None and password == user[1]:
+        if user is not None and password == user[2]:
             print("Correct password")
             main(user)
         else:
